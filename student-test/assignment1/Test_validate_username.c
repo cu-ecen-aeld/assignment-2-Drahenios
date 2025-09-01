@@ -1,9 +1,9 @@
-#include "../../assignment-autotest/test/assignment1/username-from-conf-file.h"
-#include "../../examples/autotest-validate/autotest-validate.h"
 #include "unity.h"
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
+#include "../../examples/autotest-validate/autotest-validate.h"
+#include "../../assignment-autotest/test/assignment1/username-from-conf-file.h"
+
 
 /**
  * This function should:
@@ -25,7 +25,9 @@ void test_validate_my_username()
 
     const char *autotest_uname = my_username(); /*Username from script*/
 
-    const char *conf_uname = malloc_username_from_conf_file();
+    char *conf_uname = malloc_username_from_conf_file();
 
     TEST_ASSERT_EQUAL_STRING(autotest_uname, conf_uname);
+
+    free(conf_uname);
 }
