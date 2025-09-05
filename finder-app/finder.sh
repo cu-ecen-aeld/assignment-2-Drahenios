@@ -1,41 +1,43 @@
 #!/bin/sh
-# Author: Xabier Legaspi
+# --------------------------------------------------------------
+#  Script: finder.sh
+#  Purpose: Report the number of regular files in a directory tree
+#           and the number of lines that contain a given string.
+#  Usage:   ./finder.sh <filesdir> <searchstr>
+# --------------------------------------------------------------
 
-# Script to find the number of files within a file directory
-# and number of lines containing a string.
-
-# Check for two arguments
-if [$# -ne 2]; then
-    echo "Error: Two arguments are required."
-    echo "Usage: $0 <filesdir> <searchstr>"
+# -------------------------------------------------
+# 1. Verify that exactly two arguments were supplied
+# -------------------------------------------------
+if [ "$#" -ne 2 ]; then
+    echo "Error: Two arguments are required." >&2
+    echo "Usage: $0 <filesdir> <searchstr>" >&2
     exit 1
 fi
 
 filesdir=$1
 searchstr=$2
 
-# Check if any of the arguments is an empty string
-if [-z filesdir]; then
-    echo "Error: <filesdir> must be specified." >&2
-    exit 1
-fi
-
-if [-z searchstr]; then
-    echo "Error: <searchstr> must be specified." >&2
-    exit 1
-fi
-
-# Check if filesdir is a valid directory
-if [-d filesdir]; then
+# -------------------------------------------------
+# 2. Make sure the first argument is a directory
+# -------------------------------------------------
+if [ ! -d "$filesdir" ]; then
     echo "Error: $filesdir is not a directory." >&2
     exit 1
 fi
 
-# Count number of files in directory and subdirectories
+# -------------------------------------------------
+# 3. Count regular files (recursively)
+# -------------------------------------------------
 file_count=$(find "$filesdir" -type f | wc -l)
 
-# Count number of matching lines
-matching_lines=$(grep -r "$searchstr" "$filesdir" | wc -l)
+# -------------------------------------------------
+# 4. Count lines that contain the search string
+# -------------------------------------------------
+# Using -n forces grep to output one line per match, which wc -l then counts.
+matching_lines=$(grep -r -n "$searchstr" "$filesdir" | wc -l)
 
-# Print result
+# -------------------------------------------------
+# 5. Print the result
+# -------------------------------------------------
 echo "The number of files are $file_count and the number of matching lines are $matching_lines"
